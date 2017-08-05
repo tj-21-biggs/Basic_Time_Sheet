@@ -1,0 +1,92 @@
+
+Option Explicit
+
+Sub Drill_Log_Update()
+'
+' Drill_Log_Update Macro
+'
+    'Unprotects Drill Log
+        Worksheets("Drill Log").Unprotect "Welcome1"
+
+        If Worksheets("Drill Log").Range("J10").Value = Worksheets("Variables").Range("G10").Value Then
+          Call Enter_Single_Log
+        Else
+          Call Enter_Multiple_Log
+        End If
+
+    'protects Drill Log
+      'Worksheets("Drill Log").Protect "Welcome1"
+End Sub
+
+Sub Enter_Single_Log()
+'
+'Submits a singe drill log
+'
+'Inserts Row on Drill Log
+    Worksheets("Drill Log").Range("38:38").Insert Shift:=xlDown, CopyOrigin:=xlFormatFromRightOrBelow
+'Copys to Drill Log
+    Worksheets("Drill Log").Range("A38").Value = Worksheets("Drill Log").Range("I10").Value
+    Worksheets("Drill Log").Range("C38").Value = Worksheets("Drill Log").Range("B20").Value
+    Worksheets("Drill Log").Range("D38:Q38").Value = Worksheets("Drill Log").Range("D20:Q20").Value
+  'Clears Form and updates Joint #
+    If Worksheets("Drill Log").Range("C38").Value > Worksheets("Drill Log").Range("C39").Value Then
+        Worksheets("Drill Log").Range("B20").Value = Worksheets("Drill Log").Range("B20").Value + 1
+    Else
+      Worksheets("Drill Log").Range("B20").Value = Worksheets("Drill Log").Range("B20").Value - 1
+    End If
+
+    Worksheets("Drill Log").Range("F20:H20").Value = Null
+    Worksheets("Drill Log").Range("P20").Value = Null
+End Sub
+
+
+Sub Enter_Multiple_Log()
+'
+'Submits Multiple Drill logs
+'
+Dim x As Integer
+Dim y As Integer
+'Finds the number of joints to submit
+  x = Worksheets("Drill Log").Range("B22").Value - Worksheets("Drill Log").Range("C22").Value
+'Turns a negative number into a positive number if need be
+  If x < 0 Then
+    x = x - x
+    x = x - x
+  Else
+  End If
+
+'Grabs the joint #'s
+    y = Worksheets("Drill Log").Range("B22").Value
+
+
+Do While x >= 0
+'Inserts Row on Drill Log
+      Worksheets("Drill Log").Range("38:38").Insert Shift:=xlDown, CopyOrigin:=xlFormatFromRightOrBelow
+
+'Copys to Drill Log
+      Worksheets("Drill Log").Range("A38").Value = Worksheets("Drill Log").Range("I10").Value
+      Worksheets("Drill Log").Range("C38").Value = Worksheets("Drill Log").Range("B22").Value
+      Worksheets("Drill Log").Range("D38:F38").Value = Worksheets("Drill Log").Range("D22:F22").Value
+      Worksheets("Drill Log").Range("H38:Q38").Value = Worksheets("Drill Log").Range("H22:Q22").Value
+      Worksheets("Drill Log").Range("F22").Value = Null
+
+'Updates Joint #
+      If Worksheets("Drill Log").Range("B22").Value > Worksheets("Drill Log").Range("C22").Value Then
+         Worksheets("Drill Log").Range("C38").Value = y
+         y = y - 1
+      Else
+        Worksheets("Drill Log").Range("C38").Value = y
+         y = y + 1
+      End If
+  x = x - 1
+
+Loop
+
+'Adds end time on multiple log entry
+        Worksheets("Drill Log").Range("G38").Value = Worksheets("Drill Log").Range("G22").Value
+
+'Clears all data in form
+        Worksheets("Drill Log").Range("F22:P22").Value = Null
+        Worksheets("Drill Log").Range("B22:C22").Value = Null
+
+End Sub
